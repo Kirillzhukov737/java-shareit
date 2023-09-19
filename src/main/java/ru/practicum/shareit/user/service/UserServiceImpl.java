@@ -1,0 +1,140 @@
+package ru.practicum.shareit.user.service;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.validator.routines.EmailValidator;
+import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exceptions.ObjectAlreadyExists;
+import ru.practicum.shareit.exceptions.ObjectNotFoundException;
+import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.mapper.UserMapper;
+import ru.practicum.shareit.user.repository.UserRepository;
+
+import javax.transaction.Transactional;
+import javax.validation.ValidationException;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class UserServiceImpl implements UserService {
+
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+
+    /**
+     * Создание нового пользователя.
+     * Проверяет валидацию и существование пользователя, перед созданием, если проверки проходят, создаёт нового,
+     * пользователя и добавляет его в хранилище
+     */
+    @Override
+    public UserDto createUser(User user) {
+        validateUserForCreation(user);
+        User createdUser;
+        try {
+            createdUser = userRepository.save(user);
+        } catch (RuntimeException e) {
+            throw new ObjectAlreadyExists("unable to create user: user already exists");
+        }
+        log.info("user {} is added", createdUser);
+        return userMapper.convertToUserDto(createdUser);
+    }
+
+    /**
+     * Получаем пользователя по его Id.
+     * Проверяет существование пользователя по Id, если пользователя нет - ловим исключение, если есть возвращаем,
+     * пользователя с искомым Id из репозитория.
+     */
+    @Override
+    public UserDto getUserById(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new ObjectNotFoundException("unable to get user: user not exists")
+        );
+        UserDto userDto = userMapper.convertToUserDto(user);
+        log.info("userDto {} is returned", userDto);
+        return userDto;
+    }
+
+    /**
+     * Обновляем информацию о пользователе.
+     * Проверяем валидацию и исключения, если нет, то обновляем информацию о пользователе в репозитории.
+     */
+    @Override
+    @Transactional
+    public UserDto updateUser(User user, Long userId) {
+        validateUserForUpdate(user);
+        User userToUpdate = userRepository.findById(userId).orElseThrow(
+                () -> new ObjectNotFoundException("unable to update user: user not found")
+        );
+        if (userRepository.findByEmailIgnoreCaseAndIdNot(user.getEmail(), userId) != null) {
+            throw new ObjectAlreadyExists("unable to update user: same user already exists");
+        }
+        updateUserParams(userToUpdate, user);
+        userToUpdate = userRepository.save(userToUpdate);
+        log.info("user {} is updated", userToUpdate);
+        return userMapper.convertToUserDto(userToUpdate);
+    }
+
+    /**
+     * Обновляет параметры объекта пользователя на основе значений другого объекта пользователя.
+     */
+    private void updateUserParams(User userTo, User userFrom) {
+        if (userFrom.getEmail() != null) {
+            userTo.setEmail(userFrom.getEmail());
+        }
+        if (userFrom.getName() != null) {
+            userTo.setName(userFrom.getName());
+        }
+    }
+
+    /**
+     * Удаляет пользователя по его Id.
+     * Удаление пользователя из репозитория, если пользователя нет - ловим исключение.
+     */
+    @Override
+    public UserDto deleteUser(Long userId) {
+        User userToDelete = userRepository.findById(userId).orElseThrow(
+                () -> new ObjectNotFoundException("unable to delete user: user not exists"));
+        userRepository.deleteById(userId);
+        UserDto userDto = userMapper.convertToUserDto(userToDelete);
+        log.info("user {} is deleted", userDto);
+        return userDto;
+    }
+
+    /**
+     * Получает список всех пользователей.
+     */
+    @Override
+    public List<UserDto> getAllUsers() {
+        List<UserDto> userDtos = userRepository.findAll().stream()
+                .map(userMapper::convertToUserDto).collect(Collectors.toList());
+        log.info("all users are returned");
+        return userDtos;
+    }
+
+    /**
+     * Проверяет, что имя пользователя и емайл не пустой и емайл имеет правильный формат.
+     */
+    private void validateUserForCreation(User user) {
+        if (user.getName() == null || user.getName().isBlank()) {
+            throw new ValidationException("name cannot be blank");
+        }
+        if (user.getEmail() == null || user.getEmail().isBlank()) {
+            throw new ValidationException("email cannot be blank");
+        }
+        if (!EmailValidator.getInstance().isValid(user.getEmail())) {
+            throw new ValidationException("wrong email format");
+        }
+    }
+
+    /**
+     * Проверяет, что адрес электронной почты имеет правильный формат и не равен null, если null - исключение.
+     */
+    private void validateUserForUpdate(User user) {
+        if (!EmailValidator.getInstance().isValid(user.getEmail()) && user.getEmail() != null) {
+            throw new ValidationException("wrong email format");
+        }
+    }
+}
