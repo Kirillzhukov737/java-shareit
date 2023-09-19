@@ -28,7 +28,7 @@ public class UserMapper {
     }
 
     /**
-     * Преобразует объект пользователя User в объект DTO пользователя UserDto.
+     * * Преобразует объект пользователя User в объект DTO пользователя UserDto.
      */
     public UserDto convertToUserDto(User user) {
         return modelMapper.map(user, UserDto.class);

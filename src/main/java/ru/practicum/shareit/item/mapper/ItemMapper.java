@@ -34,7 +34,6 @@ public class ItemMapper {
         configuration.setMatchingStrategy(MatchingStrategies.STRICT);
     }
 
-
     public ItemDto convertToItemDto(Item item) {
         ItemDto itemDto = modelMapper.map(item, ItemDto.class);
         List<CommentDto> commentDtos = item.getComments()

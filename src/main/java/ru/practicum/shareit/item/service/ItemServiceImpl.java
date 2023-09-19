@@ -29,7 +29,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
-
 import java.util.stream.Collectors;
 
 @Service
@@ -74,7 +73,6 @@ public class ItemServiceImpl implements ItemService {
      */
     @Override
     public ItemDto getItemById(Long itemId, Long userId) {
-
         Item item = itemRepository.findById(itemId).orElseThrow(
                 () -> new ObjectNotFoundException("item not found")
         );
