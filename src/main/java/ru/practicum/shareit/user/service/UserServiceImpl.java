@@ -2,8 +2,6 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.ObjectAlreadyExists;
@@ -14,6 +12,7 @@ import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import javax.transaction.Transactional;
+import javax.validation.ValidationException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -122,13 +121,13 @@ public class UserServiceImpl implements UserService {
      */
     private void validateUserForCreation(User user) {
         if (user.getName() == null || user.getName().isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"name cannot be blank");
+            throw new ValidationException("name cannot be blank");
         }
         if (user.getEmail() == null || user.getEmail().isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"email cannot be blank");
+            throw new ValidationException("email cannot be blank");
         }
         if (!EmailValidator.getInstance().isValid(user.getEmail())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"wrong email format");
+            throw new ValidationException("wrong email format");
         }
     }
 
@@ -137,7 +136,7 @@ public class UserServiceImpl implements UserService {
      */
     private void validateUserForUpdate(User user) {
         if (!EmailValidator.getInstance().isValid(user.getEmail()) && user.getEmail() != null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"wrong email format");
+            throw new ValidationException("wrong email format");
         }
     }
 }
