@@ -5,12 +5,9 @@ import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 
-@Getter
-@Setter
 @NoArgsConstructor
-@ToString
-@EqualsAndHashCode
 @Entity
+@Data
 @Table(name = "comments")
 public class Comment {
     @Id

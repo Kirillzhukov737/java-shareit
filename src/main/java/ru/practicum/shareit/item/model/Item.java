@@ -7,11 +7,8 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
-@Getter
-@Setter
-@ToString
-@EqualsAndHashCode
 @Entity
+@Data
 @NoArgsConstructor
 @Table(name = "items")
 public class Item {
