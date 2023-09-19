@@ -5,9 +5,6 @@ import ru.practicum.shareit.booking.dto.BookerDtoInItem;
 
 import java.util.List;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Data
 public class ItemDto {
     private Long id;

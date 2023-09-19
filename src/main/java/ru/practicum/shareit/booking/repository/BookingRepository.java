@@ -8,6 +8,7 @@ import ru.practicum.shareit.booking.model.Booking;
 import java.util.List;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
+
     String TYPE_CASE = " case :user_type " +
             "when 'owner' then owner_id " +
             "when 'booker' then booker_id end";
@@ -65,6 +66,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
                     "and start_date <= :date and status = 'APPROVED' order by end_date desc")
     Booking getLastBooking(@Param(value = "date") String now,
                            @Param(value = "item_id") Long itemId);
+
 
     @Query(nativeQuery = true,
             value = "select count(*) from bookings where booker_id = :booker_id " +

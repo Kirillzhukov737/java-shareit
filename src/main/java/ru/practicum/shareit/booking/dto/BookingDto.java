@@ -8,11 +8,9 @@ import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.Date;
 
-/**
- * TODO Sprint add-bookings.
- */
 @Data
 public class BookingDto {
+
     private Long id;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private Date start;

@@ -40,9 +40,11 @@ public class BookingServiceImp implements BookingService {
     @Override
     public BookingDto getBookingById(Long id, Long userId) {
         Booking booking = bookingRepository.findById(id).orElseThrow(
-                () -> new ObjectNotFoundException("Booking not found"));
+                () -> new ObjectNotFoundException("Booking not found")
+        );
         userRepository.findById(userId).orElseThrow(
-                () -> new ObjectNotFoundException("User not found"));
+                () -> new ObjectNotFoundException("User not found")
+        );
         if (!booking.getOwner().getId().equals(userId) && !booking.getBooker().getId().equals(userId)) {
             throw new ObjectNotFoundException("Access denied");
         }
@@ -59,9 +61,11 @@ public class BookingServiceImp implements BookingService {
     public BookingDto addBooking(BookingInputDto bookingInputDto, Long bookerId) {
 
         User booker = userRepository.findById(bookerId).orElseThrow(
-                () -> new ObjectNotFoundException("Booker not found"));
+                () -> new ObjectNotFoundException("Booker not found")
+        );
         Item item = itemRepository.findById(bookingInputDto.getItemId()).orElseThrow(
-                () -> new ObjectNotFoundException("Item not found"));
+                () -> new ObjectNotFoundException("Item not found")
+        );
         if (item.getUser().getId().equals(bookerId)) {
             throw new ObjectNotFoundException("Owner cannot book own item");
         }
@@ -82,7 +86,8 @@ public class BookingServiceImp implements BookingService {
     public BookingDto setApprovedStatus(Long bookingId, Long ownerId, boolean isApproved) {
 
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(
-                () -> new ObjectNotFoundException("Booking not found"));
+                () -> new ObjectNotFoundException("Booking not found")
+        );
         if (!booking.getOwner().getId().equals(ownerId)) {
             throw new ObjectNotFoundException("This user is not the owner");
         }
@@ -110,7 +115,8 @@ public class BookingServiceImp implements BookingService {
     public List<BookingDto> getBookingsOfUser(Long userId, String statusString, String userType) {
 
         userRepository.findById(userId).orElseThrow(
-                () -> new ObjectNotFoundException("User not found"));
+                () -> new ObjectNotFoundException("User not found")
+        );
         if (Arrays.stream(Status.values()).noneMatch(status -> status.toString().equals(statusString))) {
             throw new ValidationException("Unknown state: " + statusString);
         }

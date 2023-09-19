@@ -7,6 +7,7 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 public class CommentCreateValidator implements ConstraintValidator<CommentCreate, CommentInputDto> {
+
     @Override
     public boolean isValid(CommentInputDto comment, ConstraintValidatorContext constraintValidatorContext) {
         if (comment.getText() == null || comment.getText().isBlank()) {

@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.validation;
 
+
 import ru.practicum.shareit.booking.dto.BookingInputDto;
 import ru.practicum.shareit.exceptions.ValidationException;
 
@@ -7,13 +8,16 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.time.LocalDateTime;
 
+
 public class BookingCreateValidator implements ConstraintValidator<BookingCreate, BookingInputDto> {
 
     @Override
     public boolean isValid(BookingInputDto booking, ConstraintValidatorContext constraintValidatorContext) {
+
         LocalDateTime start = booking.getStart();
         LocalDateTime end = booking.getEnd();
         LocalDateTime now = LocalDateTime.now();
+
         if (start == null) {
             throw new ValidationException("Booking start date cannot be null");
         }

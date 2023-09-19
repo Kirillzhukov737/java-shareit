@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
+
     List<Item> findAllByUserId(Long userId);
 
     Optional<ItemIdProjection> findByIdAndUserId(Long itemId, Long userId);

@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import javax.validation.ValidationException;
-
 @RestControllerAdvice
 @Slf4j
 public class ErrorHandler {
@@ -23,7 +21,7 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleObjectAlreadyExistsException(final ObjectAlreadyExists e) {
-        log.error(HttpStatus.NOT_FOUND.toString(), e);
+        log.error(HttpStatus.CONFLICT.toString(), e);
         return new ErrorResponse(e.getMessage());
     }
 

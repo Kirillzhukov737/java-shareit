@@ -30,6 +30,7 @@ public class UserServiceImpl implements UserService {
      * пользователя и добавляет его в хранилище
      */
     @Override
+    @Transactional
     public UserDto createUser(User user) {
         validateUserForCreation(user);
         User createdUser;
@@ -96,7 +97,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto deleteUser(Long userId) {
         User userToDelete = userRepository.findById(userId).orElseThrow(
-                () -> new ObjectNotFoundException("unable to delete user: user not exists"));
+                () -> new ObjectNotFoundException("unable to delete user: user not exists")
+        );
         userRepository.deleteById(userId);
         UserDto userDto = userMapper.convertToUserDto(userToDelete);
         log.info("user {} is deleted", userDto);

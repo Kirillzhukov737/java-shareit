@@ -7,12 +7,10 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Data
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "items")
 public class Item {
     @Id

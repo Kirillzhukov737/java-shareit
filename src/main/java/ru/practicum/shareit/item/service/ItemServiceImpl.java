@@ -76,7 +76,8 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto getItemById(Long itemId, Long userId) {
 
         Item item = itemRepository.findById(itemId).orElseThrow(
-                () -> new ObjectNotFoundException("item not found"));
+                () -> new ObjectNotFoundException("item not found")
+        );
         ItemDto itemDto;
         String nowStr = Timestamp.from(Instant.now()) + "Z";
         if (item.getUser().getId().equals(userId)) {
@@ -104,7 +105,6 @@ public class ItemServiceImpl implements ItemService {
         Item addedItem = itemRepository.save(item);
         log.info("item {} is added", addedItem);
         return itemMapper.convertToItemDto(addedItem);
-
     }
 
     /**
@@ -116,9 +116,11 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public ItemDto updateItem(Item item, Long userId) {
         Item itemToUpdate = itemRepository.findById(item.getId()).orElseThrow(
-                () -> new ObjectNotFoundException("item not exists"));
+                () -> new ObjectNotFoundException("item not exists")
+        );
         itemRepository.findByIdAndUserId(item.getId(), userId).orElseThrow(
-                () -> new ObjectNotFoundException("user doesn`t pertain this item"));
+                () -> new ObjectNotFoundException("user doesn`t pertain this item")
+        );
         updateItemParams(itemToUpdate, item);
         itemToUpdate = itemRepository.save(itemToUpdate);
         log.info("item {} is updated", itemToUpdate);
@@ -162,7 +164,8 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto deleteItem(Long itemId) {
         Item itemToRemove = itemRepository.findById(itemId).orElseThrow(
-                () -> new ObjectNotFoundException("item not exists"));
+                () -> new ObjectNotFoundException("item not exists")
+        );
         itemRepository.delete(itemToRemove);
         log.info("item {} is deleted", itemToRemove);
         return itemMapper.convertToItemDto(itemToRemove);
@@ -176,9 +179,11 @@ public class ItemServiceImpl implements ItemService {
     public CommentDto addComment(CommentInputDto commentInputDto) {
 
         User author = userRepository.findById(commentInputDto.getAuthorId()).orElseThrow(
-                () -> new ObjectNotFoundException("User not found"));
+                () -> new ObjectNotFoundException("User not found")
+        );
         Item item = itemRepository.findById(commentInputDto.getItemId()).orElseThrow(
-                () -> new ObjectNotFoundException("Item not found"));
+                () -> new ObjectNotFoundException("Item not found")
+        );
         String nowStr = Timestamp.from(Instant.now()) + "Z";
         Long count = bookingRepository.countByBookerIdAndItemIdAndStatus(author.getId(),
                 commentInputDto.getItemId(), Status.APPROVED.toString(), nowStr);
