@@ -1,4 +1,4 @@
-package ru.practicum.shareit.constants;
+package ru.practicum.shareit.item.constants;
 
 public class Constants {
     public static final String X_SHARER_USER_ID = "X-Sharer-User-Id";
