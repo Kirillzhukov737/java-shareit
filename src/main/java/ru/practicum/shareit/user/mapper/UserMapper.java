@@ -27,16 +27,10 @@ public class UserMapper {
         configuration.setMatchingStrategy(MatchingStrategies.STANDARD);
     }
 
-    /**
-     * * Преобразует объект пользователя User в объект DTO пользователя UserDto.
-     */
     public UserDto convertToUserDto(User user) {
         return modelMapper.map(user, UserDto.class);
     }
 
-    /**
-     * Преобразует объект DTO пользователя UserDto в объект пользователя User.
-     */
     public User convertToUser(UserDto userDto) {
         return modelMapper.map(userDto, User.class);
     }

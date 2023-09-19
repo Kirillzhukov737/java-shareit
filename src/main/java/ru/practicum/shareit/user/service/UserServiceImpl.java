@@ -24,11 +24,6 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
-    /**
-     * Создание нового пользователя.
-     * Проверяет валидацию и существование пользователя, перед созданием, если проверки проходят, создаёт нового,
-     * пользователя и добавляет его в хранилище
-     */
     @Override
     @Transactional
     public UserDto createUser(User user) {
@@ -43,11 +38,6 @@ public class UserServiceImpl implements UserService {
         return userMapper.convertToUserDto(createdUser);
     }
 
-    /**
-     * Получаем пользователя по его Id.
-     * Проверяет существование пользователя по Id, если пользователя нет - ловим исключение, если есть возвращаем,
-     * пользователя с искомым Id из репозитория.
-     */
     @Override
     public UserDto getUserById(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
@@ -58,10 +48,6 @@ public class UserServiceImpl implements UserService {
         return userDto;
     }
 
-    /**
-     * Обновляем информацию о пользователе.
-     * Проверяем валидацию и исключения, если нет, то обновляем информацию о пользователе в репозитории.
-     */
     @Override
     @Transactional
     public UserDto updateUser(User user, Long userId) {
@@ -76,11 +62,9 @@ public class UserServiceImpl implements UserService {
         userToUpdate = userRepository.save(userToUpdate);
         log.info("user {} is updated", userToUpdate);
         return userMapper.convertToUserDto(userToUpdate);
+
     }
 
-    /**
-     * Обновляет параметры объекта пользователя на основе значений другого объекта пользователя.
-     */
     private void updateUserParams(User userTo, User userFrom) {
         if (userFrom.getEmail() != null) {
             userTo.setEmail(userFrom.getEmail());
@@ -90,10 +74,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    /**
-     * Удаляет пользователя по его Id.
-     * Удаление пользователя из репозитория, если пользователя нет - ловим исключение.
-     */
     @Override
     public UserDto deleteUser(Long userId) {
         User userToDelete = userRepository.findById(userId).orElseThrow(
@@ -105,9 +85,6 @@ public class UserServiceImpl implements UserService {
         return userDto;
     }
 
-    /**
-     * Получает список всех пользователей.
-     */
     @Override
     public List<UserDto> getAllUsers() {
         List<UserDto> userDtos = userRepository.findAll().stream()
@@ -116,9 +93,6 @@ public class UserServiceImpl implements UserService {
         return userDtos;
     }
 
-    /**
-     * Проверяет, что имя пользователя и емайл не пустой и емайл имеет правильный формат.
-     */
     private void validateUserForCreation(User user) {
         if (user.getName() == null || user.getName().isBlank()) {
             throw new ValidationException("name cannot be blank");
@@ -131,9 +105,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    /**
-     * Проверяет, что адрес электронной почты имеет правильный формат и не равен null, если null - исключение.
-     */
     private void validateUserForUpdate(User user) {
         if (!EmailValidator.getInstance().isValid(user.getEmail()) && user.getEmail() != null) {
             throw new ValidationException("wrong email format");
