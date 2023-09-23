@@ -3,8 +3,11 @@ package ru.practicum.shareit.booking.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.user.model.User;
 
+import java.time.Instant;
 import java.util.List;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
@@ -13,19 +16,16 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "when 'owner' then owner_id " +
             "when 'booker' then booker_id end";
 
-    @Query(nativeQuery = true,
-            value = "select * from bookings where id = ?1")
-    Booking getBookingById(Long id);
+    Booking findBookingById(Long id);
 
-    @Query(nativeQuery = true,
-            value = "select count(*) from bookings where not (start_date >= ?2 or ?1 >= end_date) and owner_id = ?3 " +
-                    "and status = 'APPROVED'")
-    Long countDateOverlaps(String start, String end, Long ownerId);
+    Long countByStartBeforeAndEndAfterAndOwnerAndStatus(String start, String end, Long ownerId, Status status);
 
     @Query(nativeQuery = true,
             value = "select * from bookings where " + TYPE_CASE + " = :user_id order by start_date desc")
     List<Booking> getAllBookingsOfOwner(@Param(value = "user_id") Long userId,
                                         @Param(value = "user_type") String userType);
+
+     List<Booking> findByOwnerOrderByStartDesc(User owner);
 
     @Query(nativeQuery = true,
             value = "select * from bookings where " + TYPE_CASE +
