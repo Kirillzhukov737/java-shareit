@@ -8,6 +8,7 @@ import ru.practicum.shareit.exceptions.ObjectAlreadyExists;
 import ru.practicum.shareit.exceptions.ObjectNotFoundException;
 import ru.practicum.shareit.exceptions.ValidationException;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserInputDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
@@ -26,11 +27,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDto createUser(User user) {
-        validateUserForCreation(user);
-        User createdUser;
+    public UserDto createUser(UserInputDto userInputDto) {
+        validateUserForCreation(userInputDto);
+        User createdUser = userMapper.convertToUser(userInputDto);
         try {
-            createdUser = userRepository.save(user);
+            createdUser = userRepository.save(createdUser);
         } catch (RuntimeException e) {
             throw new ObjectAlreadyExists("unable to create user: user already exists");
         }
@@ -41,8 +42,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUserById(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new ObjectNotFoundException("unable to get user: user not exists")
-        );
+                () -> new ObjectNotFoundException("unable to get user: user not exists"));
         UserDto userDto = userMapper.convertToUserDto(user);
         log.info("userDto {} is returned", userDto);
         return userDto;
@@ -50,11 +50,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDto updateUser(User user, Long userId) {
+    public UserDto updateUser(UserInputDto user, Long userId) {
         validateUserForUpdate(user);
         User userToUpdate = userRepository.findById(userId).orElseThrow(
-                () -> new ObjectNotFoundException("unable to update user: user not found")
-        );
+                () -> new ObjectNotFoundException("unable to update user: user not found"));
         if (userRepository.findByEmailIgnoreCaseAndIdNot(user.getEmail(), userId) != null) {
             throw new ObjectAlreadyExists("unable to update user: same user already exists");
         }
@@ -62,10 +61,9 @@ public class UserServiceImpl implements UserService {
         userToUpdate = userRepository.save(userToUpdate);
         log.info("user {} is updated", userToUpdate);
         return userMapper.convertToUserDto(userToUpdate);
-
     }
 
-    private void updateUserParams(User userTo, User userFrom) {
+    private void updateUserParams(User userTo, UserInputDto userFrom) {
         if (userFrom.getEmail() != null) {
             userTo.setEmail(userFrom.getEmail());
         }
@@ -77,8 +75,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto deleteUser(Long userId) {
         User userToDelete = userRepository.findById(userId).orElseThrow(
-                () -> new ObjectNotFoundException("unable to delete user: user not exists")
-        );
+                () -> new ObjectNotFoundException("unable to delete user: user not exists"));
         userRepository.deleteById(userId);
         UserDto userDto = userMapper.convertToUserDto(userToDelete);
         log.info("user {} is deleted", userDto);
@@ -93,7 +90,7 @@ public class UserServiceImpl implements UserService {
         return userDtos;
     }
 
-    private void validateUserForCreation(User user) {
+    private void validateUserForCreation(UserInputDto user) {
         if (user.getName() == null || user.getName().isBlank()) {
             throw new ValidationException("name cannot be blank");
         }
@@ -105,8 +102,8 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private void validateUserForUpdate(User user) {
-        if (!EmailValidator.getInstance().isValid(user.getEmail()) && user.getEmail() != null) {
+    private void validateUserForUpdate(UserInputDto userInputDto) {
+        if (!EmailValidator.getInstance().isValid(userInputDto.getEmail()) && userInputDto.getEmail() != null) {
             throw new ValidationException("wrong email format");
         }
     }
