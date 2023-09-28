@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,8 +38,7 @@ public class ItemControllerTest {
     @Autowired
     private MockMvc mvc;
     private ItemDto itemDto;
-//"X-Sharer-User-Id"
-    //ItemControllerConstants.X_SHARER_USER_ID
+
     @BeforeEach
     void setUpItemDto() {
         itemDto = ItemDto.builder()
