@@ -15,6 +15,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     Booking findBookingById(Long id);
 
+    //исправил
     @Query(nativeQuery = true,
             value  = "select count(*) from bookings " +
             "where not (start_date >= ?2 or ?1 >= end_date) " +
