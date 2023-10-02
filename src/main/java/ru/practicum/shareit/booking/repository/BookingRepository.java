@@ -16,9 +16,13 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     Booking findBookingById(Long id);
 
     @Query(nativeQuery = true,
-            value = "select count(*) from bookings where not (start_date >= ?2 or ?1 >= end_date) and item_id = ?3 " +
-                    "and status = 'APPROVED'")
-    Long countDateOverlaps(String start, String end, Long itemId);
+            value  = "select count(*) from bookings " +
+            "where not (start_date >= ?2 or ?1 >= end_date) " +
+            "and item_id = ?3 " +
+            "and status = 'APPROVED'")
+    Long countDateOverlaps(@Param("start_date") String start,
+                           @Param("end_date") String end,
+                           @Param("item_id") Long itemId);
 
     @Query(nativeQuery = true,
             value = "select * from bookings where " + TYPE_CASE + " = :user_id order by start_date desc " +
