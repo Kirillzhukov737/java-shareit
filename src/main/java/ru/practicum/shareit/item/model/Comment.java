@@ -5,11 +5,14 @@ import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 
-@NoArgsConstructor
-@Entity
 @Data
+@NoArgsConstructor
+@Builder
+@AllArgsConstructor
+@Entity
 @Table(name = "comments")
 public class Comment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

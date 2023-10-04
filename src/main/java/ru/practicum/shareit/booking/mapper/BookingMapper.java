@@ -48,7 +48,6 @@ public class BookingMapper {
     /**
      * Выполняет преобразование объекта BookingDto в объект Booking.
      */
-
     public Booking convertToBooking(BookingDto bookingDto) {
         return modelMapper.map(bookingDto, Booking.class);
     }

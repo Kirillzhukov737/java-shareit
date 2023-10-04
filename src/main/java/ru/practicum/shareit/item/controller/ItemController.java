@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.CommentInputDto;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.dto.ItemInputDto;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.item.validation.CommentCreate;
 import ru.practicum.shareit.item.validation.ItemCreate;
@@ -31,24 +31,27 @@ public class ItemController {
     }
 
     @PostMapping("/items")
-    public ItemDto addItem(@ItemCreate @RequestBody Item item, @RequestHeader(ItemControllerConstants.X_SHARER_USER_ID) Long userId) {
-        log.info("adding new item {} requested", item);
-        return itemService.addItem(item, userId);
+    public ItemDto addItem(@ItemCreate @RequestBody ItemInputDto itemInputDto,
+                           @RequestHeader(ItemControllerConstants.X_SHARER_USER_ID) Long userId) {
+        log.info("adding new item {} requested", itemInputDto);
+        return itemService.addItem(itemInputDto, userId);
     }
 
     @PatchMapping("/items/{itemId}")
     public ItemDto updateItem(@PathVariable Long itemId,
-                              @ItemUpdate @RequestBody Item item,
+                              @ItemUpdate @RequestBody ItemInputDto itemInputDto,
                               @RequestHeader(ItemControllerConstants.X_SHARER_USER_ID) Long userId) {
         log.info("updating item requested");
-        item.setId(itemId);
-        return itemService.updateItem(item, userId);
+        itemInputDto.setId(itemId);
+        return itemService.updateItem(itemInputDto, userId);
     }
 
     @GetMapping("/items/search")
-    public List<ItemDto> searchItem(@RequestParam String text) {
+    public List<ItemDto> searchItem(@RequestParam String text,
+                                    @RequestParam(required = false, defaultValue = "0") Integer from,
+                                    @RequestParam(required = false, defaultValue = "10") Integer size) {
         log.info("search for {}", text);
-        return itemService.searchItem(text);
+        return itemService.searchItem(text, from, size);
     }
 
     @DeleteMapping("/items/{itemId}")
@@ -58,13 +61,16 @@ public class ItemController {
     }
 
     @GetMapping("/items")
-    public List<ItemDto> getAllItemsOfUser(@RequestHeader(ItemControllerConstants.X_SHARER_USER_ID) Long userId) {
+    public List<ItemDto> getAllItemsOfUser(@RequestHeader(ItemControllerConstants.X_SHARER_USER_ID) Long userId,
+                                           @RequestParam(required = false, defaultValue = "0") Integer from,
+                                           @RequestParam(required = false, defaultValue = "10") Integer size) {
         log.info("all items of user {} are requested", userId);
-        return itemService.getAllItemsOfUser(userId);
+        return itemService.getAllItemsOfUser(userId, from, size);
     }
 
     @PostMapping("/items/{itemId}/comment")
-    public CommentDto addComment(@PathVariable Long itemId, @RequestHeader(ItemControllerConstants.X_SHARER_USER_ID) Long authorId,
+    public CommentDto addComment(@PathVariable Long itemId,
+                                 @RequestHeader(ItemControllerConstants.X_SHARER_USER_ID) Long authorId,
                                  @CommentCreate @RequestBody CommentInputDto commentInputDto) {
         commentInputDto.setAuthorId(authorId);
         commentInputDto.setItemId(itemId);

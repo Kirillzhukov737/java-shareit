@@ -7,8 +7,10 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity
 @Data
+@Entity
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "items")
 public class Item {
@@ -22,10 +24,12 @@ public class Item {
     @Column(name = "available", nullable = false)
     @EqualsAndHashCode.Exclude
     private Boolean available;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
     @OneToMany
     @JoinColumn(name = "item_id")
     private Set<Comment> comments = new HashSet<>();
+    @Column(name = "request_Id", nullable = true)
+    private Long requestId;
 }
