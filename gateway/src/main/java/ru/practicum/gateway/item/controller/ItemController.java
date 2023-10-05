@@ -13,8 +13,6 @@ import ru.practicum.gateway.item.validation.CommentCreate;
 import ru.practicum.gateway.item.validation.ItemCreate;
 import ru.practicum.gateway.item.validation.ItemUpdate;
 import ru.practicum.gateway.validators.PageValidator;
-import ru.practicum.shareit.item.controller.ItemControllerConstants;
-
 
 @RestController
 @Validated

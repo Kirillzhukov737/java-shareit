@@ -1,13 +1,11 @@
 package ru.practicum.gateway.booking.validation;
 
-
 import ru.practicum.gateway.booking.dto.BookingInputDto;
 import ru.practicum.gateway.exceptions.ValidationException;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.time.LocalDateTime;
-
 
 public class BookingCreateValidator implements ConstraintValidator<BookingCreate, BookingInputDto> {
 

@@ -2,7 +2,6 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.ObjectAlreadyExists;
 import ru.practicum.shareit.exceptions.ObjectNotFoundException;
@@ -28,7 +27,6 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto createUser(UserInputDto userInputDto) {
-        validateUserForCreation(userInputDto);
         User createdUser = userMapper.convertToUser(userInputDto);
         try {
             createdUser = userRepository.save(createdUser);
@@ -51,7 +49,6 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto updateUser(UserInputDto user, Long userId) {
-        validateUserForUpdate(user);
         User userToUpdate = userRepository.findById(userId).orElseThrow(
                 () -> new ObjectNotFoundException("unable to update user: user not found"));
         if (userRepository.findByEmailIgnoreCaseAndIdNot(user.getEmail(), userId) != null) {
@@ -88,23 +85,5 @@ public class UserServiceImpl implements UserService {
                 .map(userMapper::convertToUserDto).collect(Collectors.toList());
         log.info("all users are returned");
         return userDtos;
-    }
-
-    private void validateUserForCreation(UserInputDto user) {
-        if (user.getName() == null || user.getName().isBlank()) {
-            throw new ValidationException("name cannot be blank");
-        }
-        if (user.getEmail() == null || user.getEmail().isBlank()) {
-            throw new ValidationException("email cannot be blank");
-        }
-        if (!EmailValidator.getInstance().isValid(user.getEmail())) {
-            throw new ValidationException("wrong email format");
-        }
-    }
-
-    private void validateUserForUpdate(UserInputDto userInputDto) {
-        if (!EmailValidator.getInstance().isValid(userInputDto.getEmail()) && userInputDto.getEmail() != null) {
-            throw new ValidationException("wrong email format");
-        }
     }
 }

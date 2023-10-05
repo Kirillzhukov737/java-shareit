@@ -4,8 +4,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.projection.ItemIdProjection;
+import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
 import java.util.Optional;

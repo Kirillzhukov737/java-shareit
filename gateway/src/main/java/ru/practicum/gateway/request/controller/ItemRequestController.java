@@ -4,12 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.gateway.item.controller.ItemControllerConstants;
 import ru.practicum.gateway.request.client.ItemRequestClient;
 import ru.practicum.gateway.request.dto.ItemRequestInputDto;
 import ru.practicum.gateway.request.validation.ItemRequestCreate;
 import ru.practicum.gateway.validators.PageValidator;
-import ru.practicum.shareit.item.controller.ItemControllerConstants;
-
 
 @RestController
 @Validated
@@ -20,18 +19,18 @@ public class ItemRequestController {
     private final PageValidator pageValidator;
 
     @PostMapping("/requests")
-    public ResponseEntity<Object> addRequest(@RequestHeader(ItemControllerConstants.X_SHARER_USER_ID) Long userId,
+    public ResponseEntity<Object> addRequest(@RequestHeader(ItemRequestControllerConstants.X_SHARER_USER_ID) Long userId,
                                              @ItemRequestCreate @RequestBody ItemRequestInputDto inputDto) {
         return itemRequestClient.addRequest(userId, inputDto);
     }
 
     @GetMapping("/requests")
-    public ResponseEntity<Object> getRequestsOfUser(@RequestHeader(ItemControllerConstants.X_SHARER_USER_ID) Long userId) {
+    public ResponseEntity<Object> getRequestsOfUser(@RequestHeader(ItemRequestControllerConstants.X_SHARER_USER_ID) Long userId) {
         return itemRequestClient.getRequestsOfUser(userId);
     }
 
     @GetMapping("/requests/all")
-    public ResponseEntity<Object> getAllRequestsPaged(@RequestHeader(ItemControllerConstants.X_SHARER_USER_ID) Long userId,
+    public ResponseEntity<Object> getAllRequestsPaged(@RequestHeader(ItemRequestControllerConstants.X_SHARER_USER_ID) Long userId,
                                                       @RequestParam(required = false, defaultValue = "0") Integer from,
                                                       @RequestParam(required = false, defaultValue = "10") Integer size) {
         pageValidator.validatePagination(from, size);
@@ -39,7 +38,7 @@ public class ItemRequestController {
     }
 
     @GetMapping("/requests/{requestId}")
-    public ResponseEntity<Object> getRequestById(@RequestHeader(ItemControllerConstants.X_SHARER_USER_ID) Long userId,
+    public ResponseEntity<Object> getRequestById(@RequestHeader(ItemRequestControllerConstants.X_SHARER_USER_ID) Long userId,
                                                  @PathVariable Long requestId) {
         return itemRequestClient.getRequestById(userId, requestId);
     }

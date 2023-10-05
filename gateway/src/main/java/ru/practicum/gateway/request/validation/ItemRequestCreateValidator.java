@@ -1,7 +1,7 @@
 package ru.practicum.gateway.request.validation;
 
+import ru.practicum.gateway.exceptions.ValidationException;
 import ru.practicum.gateway.request.dto.ItemRequestInputDto;
-import ru.practicum.shareit.exceptions.ValidationException;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

@@ -5,9 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.shareit.booking.Status;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.gateway.booking.Status;
+import ru.practicum.gateway.item.dto.ItemDto;
+import ru.practicum.gateway.user.dto.UserDto;
 
 import java.util.Date;
 
