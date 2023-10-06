@@ -25,7 +25,7 @@ public class ItemController {
 
     @GetMapping("/items/{itemId}")
     public ResponseEntity<Object> getItemById(@PathVariable Long itemId,
-                                              @RequestHeader() Long userId) {
+                                              @RequestHeader(ItemControllerConstants.X_SHARER_USER_ID) Long userId) {
         return itemClient.getItemById(itemId, userId);
     }
 
