@@ -2,16 +2,19 @@ package ru.practicum.shareit.request.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.validation.ItemRequestCreate;
 import ru.practicum.shareit.request.dto.ItemRequestInputDto;
 import ru.practicum.shareit.request.client.ItemRequestClient;
 import ru.practicum.shareit.validators.PageValidator;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 @RestController
 @Validated
 @RequiredArgsConstructor
+@Component
 public class ItemRequestController {
 
     private final ItemRequestClient itemRequestClient;
