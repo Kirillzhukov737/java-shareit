@@ -3,13 +3,12 @@ package ru.practicum.shareit.request.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exceptions.ObjectNotFoundException;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
+import ru.practicum.shareit.request.dto.ItemRequestInputDto;
 import ru.practicum.shareit.request.mapper.ItemRequestMapper;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
-import ru.practicum.shareit.exceptions.ObjectNotFoundException;
-import ru.practicum.shareit.exceptions.ValidationException;
-import ru.practicum.shareit.request.dto.ItemRequestInputDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -32,8 +31,10 @@ public class ItemRequestServiceImp implements ItemRequestService {
     @Transactional
     @Override
     public ItemRequestDto addRequest(ItemRequestInputDto inputDto, Long userId) {
+
         User requestingUser = userRepository.findById(userId).orElseThrow(
-                () -> new ObjectNotFoundException("User not found"));
+                () -> new ObjectNotFoundException("User not found")
+        );
         ItemRequest itemRequest = itemRequestRepository.save(makeItemRequest(inputDto, requestingUser));
         log.info("added item request {}", itemRequest);
         return itemRequestMapper.convertToItemRequestDto(itemRequest);
@@ -50,21 +51,20 @@ public class ItemRequestServiceImp implements ItemRequestService {
 
     @Override
     public List<ItemRequestDto> getItemRequestsOfUser(Long userId) {
+
         userRepository.findById(userId).orElseThrow(
-                () -> new ObjectNotFoundException("user not found"));
-        List<ItemRequestDto> itemRequestDtos = itemRequestRepository
-                .getItemRequestByRequestingUserIdOrderByCreated(userId).stream()
-                .map(itemRequestMapper::convertToItemRequestDto)
-                .collect(Collectors.toList());
+                () -> new ObjectNotFoundException("user not found")
+        );
+        List<ItemRequestDto> itemRequestDtos = itemRequestRepository.getItemRequestByRequestingUserIdOrderByCreated(userId).stream()
+                .map(itemRequestMapper::convertToItemRequestDto).collect(Collectors.toList());
         log.info("list of requests is returned {}", itemRequestDtos);
         return itemRequestDtos;
     }
 
     @Override
     public List<ItemRequestDto> getAllRequestsPaged(Long userId, Integer from, Integer size) {
-        if (size <= 0 || from < 0) {
-            throw new ValidationException("invalid page parameters");
-        }
+
+
         if (userRepository.findById(userId).isEmpty()) {
             userId = -1L;
         }
@@ -78,10 +78,13 @@ public class ItemRequestServiceImp implements ItemRequestService {
 
     @Override
     public ItemRequestDto getItemRequestById(Long userId, Long requestId) {
+
         userRepository.findById(userId).orElseThrow(
-                () -> new ObjectNotFoundException("user not found"));
+                () -> new ObjectNotFoundException("user not found")
+        );
         ItemRequest itemRequest = itemRequestRepository.findById(requestId).orElseThrow(
-                () -> new ObjectNotFoundException("item request not found"));
+                () -> new ObjectNotFoundException("item request not found")
+        );
         log.info("item request is returned {}", itemRequest);
         return itemRequestMapper.convertToItemRequestDto(itemRequest);
     }

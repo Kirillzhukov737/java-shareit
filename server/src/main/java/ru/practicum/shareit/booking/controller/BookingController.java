@@ -2,7 +2,6 @@ package ru.practicum.shareit.booking.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingInputDto;
@@ -14,7 +13,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@Validated
 public class BookingController {
 
     private final BookingService bookingService;
@@ -29,8 +27,8 @@ public class BookingController {
     @PatchMapping("bookings/{bookingId}")
     public BookingDto setApproveStatus(@RequestHeader(BookingControllerConstants.X_SHARER_USER_ID) Long ownerId,
                                        @PathVariable Long bookingId,
-                                       @RequestParam boolean approved) {
-        log.info("Booking {} set approved to {}", bookingId, approved);
+                                       @RequestParam Boolean approved) {
+        log.info("Booking {} set approved to {} from user {}", bookingId, approved, ownerId);
         return bookingService.setApprovedStatus(bookingId, ownerId, approved);
     }
 

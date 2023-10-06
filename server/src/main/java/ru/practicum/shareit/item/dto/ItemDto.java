@@ -13,7 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ItemDto {
-
     private Long id;
     private String name;
     private String description;
@@ -22,4 +21,5 @@ public class ItemDto {
     private BookerDtoInItem lastBooking;
     private List<CommentDto> comments;
     private Long requestId;
+
 }

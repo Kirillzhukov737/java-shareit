@@ -16,4 +16,6 @@ public class ItemInputDto {
     private Boolean available;
     private Long requestId;
     private Long id;
+
+
 }

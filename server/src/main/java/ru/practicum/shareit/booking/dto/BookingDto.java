@@ -9,7 +9,7 @@ import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.user.dto.UserDto;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -19,9 +19,9 @@ public class BookingDto {
 
     private Long id;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private Date start;
+    private LocalDateTime start;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private Date end;
+    private LocalDateTime end;
     private Status status;
     private ItemDto item;
     private UserDto booker;

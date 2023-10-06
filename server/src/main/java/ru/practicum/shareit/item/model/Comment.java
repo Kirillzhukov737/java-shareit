@@ -5,10 +5,14 @@ import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 
-@Data
+
+@Getter
+@Setter
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
+@ToString
+@EqualsAndHashCode
 @Entity
 @Table(name = "comments")
 public class Comment {
@@ -25,4 +29,6 @@ public class Comment {
     private Long created;
     @Column(name = "item_id")
     private Long itemId;
+
+
 }

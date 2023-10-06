@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.ObjectAlreadyExists;
 import ru.practicum.shareit.exceptions.ObjectNotFoundException;
-import ru.practicum.shareit.exceptions.ValidationException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserInputDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
@@ -15,6 +14,7 @@ import ru.practicum.shareit.user.repository.UserRepository;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +40,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUserById(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new ObjectNotFoundException("unable to get user: user not exists"));
+                () -> new ObjectNotFoundException("unable to get user: user not exists")
+        );
         UserDto userDto = userMapper.convertToUserDto(user);
         log.info("userDto {} is returned", userDto);
         return userDto;
@@ -50,7 +51,8 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDto updateUser(UserInputDto user, Long userId) {
         User userToUpdate = userRepository.findById(userId).orElseThrow(
-                () -> new ObjectNotFoundException("unable to update user: user not found"));
+                () -> new ObjectNotFoundException("unable to update user: user not found")
+        );
         if (userRepository.findByEmailIgnoreCaseAndIdNot(user.getEmail(), userId) != null) {
             throw new ObjectAlreadyExists("unable to update user: same user already exists");
         }
@@ -58,6 +60,7 @@ public class UserServiceImpl implements UserService {
         userToUpdate = userRepository.save(userToUpdate);
         log.info("user {} is updated", userToUpdate);
         return userMapper.convertToUserDto(userToUpdate);
+
     }
 
     private void updateUserParams(User userTo, UserInputDto userFrom) {
@@ -72,7 +75,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto deleteUser(Long userId) {
         User userToDelete = userRepository.findById(userId).orElseThrow(
-                () -> new ObjectNotFoundException("unable to delete user: user not exists"));
+                () -> new ObjectNotFoundException("unable to delete user: user not exists")
+        );
         userRepository.deleteById(userId);
         UserDto userDto = userMapper.convertToUserDto(userToDelete);
         log.info("user {} is deleted", userDto);
@@ -85,5 +89,6 @@ public class UserServiceImpl implements UserService {
                 .map(userMapper::convertToUserDto).collect(Collectors.toList());
         log.info("all users are returned");
         return userDtos;
+
     }
 }

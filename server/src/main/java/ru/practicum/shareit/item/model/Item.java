@@ -7,13 +7,17 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
 @Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "items")
 public class Item {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,6 +34,8 @@ public class Item {
     @OneToMany
     @JoinColumn(name = "item_id")
     private Set<Comment> comments = new HashSet<>();
+
     @Column(name = "request_Id", nullable = true)
     private Long requestId;
+
 }

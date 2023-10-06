@@ -12,8 +12,8 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingInputDto;
 import ru.practicum.shareit.booking.model.Booking;
 
-import java.time.ZoneOffset;
-import java.util.Date;
+import java.time.ZoneId;
+
 
 @Component
 public class BookingMapper {
@@ -32,39 +32,27 @@ public class BookingMapper {
         configuration.setMatchingStrategy(MatchingStrategies.STRICT);
     }
 
-    /**
-     * Выполняет преобразование объекта Booking в объект BookingDto.
-     */
     public BookingDto convertToBookingDto(Booking booking) {
         if (booking == null) {
             return null;
         }
         BookingDto bookingDto = modelMapper.map(booking, BookingDto.class);
-        bookingDto.setStart(Date.from(booking.getStart()));
-        bookingDto.setEnd(Date.from(booking.getEnd()));
+        bookingDto.setStart(booking.getStart().toLocalDateTime());
+        bookingDto.setEnd(booking.getEnd().toLocalDateTime());
         return bookingDto;
     }
 
-    /**
-     * Выполняет преобразование объекта BookingDto в объект Booking.
-     */
     public Booking convertToBooking(BookingDto bookingDto) {
         return modelMapper.map(bookingDto, Booking.class);
     }
 
-    /**
-     * Выполняет преобразование объекта BookingInputDto в объект Booking.
-     */
     public Booking convertToBooking(BookingInputDto bookingInputDto) {
         Booking booking = modelMapper.map(bookingInputDto, Booking.class);
-        booking.setStart(bookingInputDto.getStart().toInstant(ZoneOffset.ofHours(0)));
-        booking.setEnd(bookingInputDto.getEnd().toInstant(ZoneOffset.ofHours(0)));
+        booking.setStart(bookingInputDto.getStart().atZone(ZoneId.systemDefault()));
+        booking.setEnd(bookingInputDto.getEnd().atZone(ZoneId.systemDefault()));
         return booking;
     }
 
-    /**
-     * Выполняет преобразование объекта Booking в объект BookerDtoInItem.
-     */
     public BookerDtoInItem convertToBookingDtoInItem(Booking booking) {
         if (booking == null) {
             return null;

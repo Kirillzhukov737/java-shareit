@@ -6,10 +6,13 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
-import java.time.Instant;
+import java.time.ZonedDateTime;
 
-@Data
+@Getter
+@Setter
 @Entity
+@EqualsAndHashCode
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -20,9 +23,9 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "start_date", nullable = false)
-    private Instant start;
+    private ZonedDateTime start;
     @Column(name = "end_date", nullable = false)
-    private Instant end;
+    private ZonedDateTime end;
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status;
@@ -35,4 +38,6 @@ public class Booking {
     @OneToOne
     @JoinColumn(name = "item_id")
     private Item item;
+
+
 }

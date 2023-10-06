@@ -7,8 +7,8 @@ import org.modelmapper.convention.NameTokenizers;
 import org.modelmapper.convention.NamingConventions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.dto.ItemRequestDto;
 
 @Component
 public class ItemRequestMapper {
@@ -29,7 +29,7 @@ public class ItemRequestMapper {
 
     public ItemRequestDto convertToItemRequestDto(ItemRequest itemRequest) {
         ItemRequestDto itemRequestDto = modelMapper.map(itemRequest, ItemRequestDto.class);
-        itemRequestDto.setCreated(itemRequest.getCreated().toLocalDateTime());
+        itemRequestDto.setCreated(itemRequest.getCreated());
         return itemRequestDto;
     }
 }

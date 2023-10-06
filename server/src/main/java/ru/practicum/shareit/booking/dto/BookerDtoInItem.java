@@ -13,4 +13,5 @@ public class BookerDtoInItem {
 
     private Long id;
     private Long bookerId;
+
 }

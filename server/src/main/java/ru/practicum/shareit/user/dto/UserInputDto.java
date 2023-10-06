@@ -14,4 +14,5 @@ public class UserInputDto {
     private Long id;
     private String name;
     private String email;
+
 }

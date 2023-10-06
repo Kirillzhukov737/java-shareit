@@ -4,8 +4,12 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@Data
+
+@Getter
+@Setter
+@EqualsAndHashCode
 @Builder
+@ToString
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,4 +23,5 @@ public class User {
     private String name;
     @Column(name = "email", unique = true)
     private String email;
+
 }

@@ -3,13 +3,13 @@ package ru.practicum.shareit.booking.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingInputDto;
 import ru.practicum.shareit.booking.dto.BookingRequestParamsDto;
-import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.exceptions.ObjectNotFoundException;
 import ru.practicum.shareit.exceptions.ValidationException;
 import ru.practicum.shareit.item.model.Item;
@@ -19,7 +19,6 @@ import ru.practicum.shareit.user.repository.UserRepository;
 
 import javax.transaction.Transactional;
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
@@ -39,9 +38,11 @@ public class BookingServiceImp implements BookingService {
     @Override
     public BookingDto getBookingById(Long id, Long userId) {
         Booking booking = bookingRepository.findById(id).orElseThrow(
-                () -> new ObjectNotFoundException("Booking not found"));
+                () -> new ObjectNotFoundException("Booking not found")
+        );
         userRepository.findById(userId).orElseThrow(
-                () -> new ObjectNotFoundException("User not found"));
+                () -> new ObjectNotFoundException("User not found")
+        );
         if (!booking.getOwner().getId().equals(userId) && !booking.getBooker().getId().equals(userId)) {
             throw new ObjectNotFoundException("Access denied");
         }
@@ -54,9 +55,11 @@ public class BookingServiceImp implements BookingService {
     public BookingDto addBooking(BookingInputDto bookingInputDto, Long bookerId) {
 
         User booker = userRepository.findById(bookerId).orElseThrow(
-                () -> new ObjectNotFoundException("Booker not found"));
+                () -> new ObjectNotFoundException("Booker not found")
+        );
         Item item = itemRepository.findById(bookingInputDto.getItemId()).orElseThrow(
-                () -> new ObjectNotFoundException("Item not found"));
+                () -> new ObjectNotFoundException("Item not found")
+        );
         if (item.getUser().getId().equals(bookerId)) {
             throw new ObjectNotFoundException("Owner cannot book own item");
         }
@@ -71,8 +74,10 @@ public class BookingServiceImp implements BookingService {
     @Override
     @Transactional
     public BookingDto setApprovedStatus(Long bookingId, Long ownerId, boolean isApproved) {
+
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(
-                () -> new ObjectNotFoundException("Booking not found"));
+                () -> new ObjectNotFoundException("Booking not found")
+        );
         if (!booking.getOwner().getId().equals(ownerId)) {
             throw new ObjectNotFoundException("This user is not the owner");
         }
@@ -80,7 +85,7 @@ public class BookingServiceImp implements BookingService {
                 booking.getStatus().equals(Status.REJECTED) && !isApproved) {
             throw new ValidationException("Cannot set same status");
         }
-        LocalDateTime end = LocalDateTime.ofInstant(booking.getEnd(), ZoneId.of("UTC"));
+        LocalDateTime end = booking.getEnd().toLocalDateTime();
         LocalDateTime now = LocalDateTime.now();
         if (isApproved) {
             booking.setStatus(Status.APPROVED);
@@ -98,18 +103,16 @@ public class BookingServiceImp implements BookingService {
     public List<BookingDto> getBookingsOfUser(BookingRequestParamsDto paramsDto) {
 
         userRepository.findById(paramsDto.getOwnerId()).orElseThrow(
-                () -> new ObjectNotFoundException("User not found"));
+                () -> new ObjectNotFoundException("User not found")
+        );
         paramsDto.setStatusString(paramsDto.getStatusString().toUpperCase());
         if (Arrays.stream(Status.values()).noneMatch(status -> status.toString().equals(paramsDto.getStatusString()))) {
             throw new ValidationException("Unknown state: " + paramsDto.getStatusString());
         }
-        if (paramsDto.getSize() <= 0 || paramsDto.getFrom() < 0) {
-            throw new ValidationException("invalid page parameters");
-        }
 
         Status status = Status.valueOf(paramsDto.getStatusString());
         List<Booking> bookings;
-        String nowStr = Timestamp.from(Instant.now()) + "Z";
+        Timestamp now = Timestamp.valueOf(LocalDateTime.now(ZoneId.systemDefault()));
         switch (status) {
             case ALL:
                 bookings = bookingRepository.getAllBookingsOfOwner(paramsDto.getOwnerId(), paramsDto.getUserType(),
@@ -131,15 +134,15 @@ public class BookingServiceImp implements BookingService {
                                 paramsDto.getUserType(), paramsDto.getFrom(), paramsDto.getSize());
                 break;
             case FUTURE:
-                bookings = bookingRepository.getFutureBookingsOfOwner(paramsDto.getOwnerId(), nowStr,
+                bookings = bookingRepository.getFutureBookingsOfOwner(paramsDto.getOwnerId(), now,
                         paramsDto.getUserType(), paramsDto.getFrom(), paramsDto.getSize());
                 break;
             case CURRENT:
-                bookings = bookingRepository.getCurrentBookingsOfOwner(paramsDto.getOwnerId(), nowStr,
+                bookings = bookingRepository.getCurrentBookingsOfOwner(paramsDto.getOwnerId(), now,
                         paramsDto.getUserType(), paramsDto.getFrom(), paramsDto.getSize());
                 break;
             case PAST:
-                bookings = bookingRepository.getPastBookingsOfOwner(paramsDto.getOwnerId(), nowStr,
+                bookings = bookingRepository.getPastBookingsOfOwner(paramsDto.getOwnerId(), now,
                         paramsDto.getUserType(), paramsDto.getFrom(), paramsDto.getSize());
                 break;
             default:
@@ -157,4 +160,5 @@ public class BookingServiceImp implements BookingService {
         booking.setStatus(Status.WAITING);
         return booking;
     }
+
 }

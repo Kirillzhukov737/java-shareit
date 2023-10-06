@@ -16,4 +16,5 @@ public class BookingRequestParamsDto {
     private String userType;
     private Integer from;
     private Integer size;
+
 }
